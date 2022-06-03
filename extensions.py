@@ -77,10 +77,6 @@ def bot_help(message: types.Message, bot: TeleBot):
                                       '/conv eur usd 15.5')
 
 
-def bot_start(message: types.Message, bot: TeleBot):
-    bot.send_message(message.chat.id, 'Currency converter\ntype /help for usage')
-
-
 class SuperBot(TeleBot):
     def __init__(self):
         config = ConfigParser()
@@ -90,11 +86,15 @@ class SuperBot(TeleBot):
 
         self.possible_currencies = config['Currencies']['possible_currencies'].split()
 
-        self.register_message_handler(bot_start, commands=['start'], pass_bot=True)
+        self.register_message_handler(SuperBot.bot_start, commands=['start'], pass_bot=True)
         self.register_message_handler(bot_help, commands=['help'], pass_bot=True)
         self.register_message_handler(bot_info, commands=['info'], pass_bot=True)
         self.register_message_handler(bot_conv, commands=['conv'], pass_bot=True)
         self.register_message_handler(bot_values, commands=['values'], pass_bot=True)
+
+    @staticmethod
+    def bot_start(message: types.Message, bot: TeleBot):
+        bot.send_message(message.chat.id, 'Currency converter\ntype /help for usage')
 
     def send_exception(self, chat_id, message):
         self.send_message(chat_id, message)
